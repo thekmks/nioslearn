@@ -250,6 +250,12 @@
       align-content: center;
     }
 
+    .home-stack {
+      display: grid;
+      gap: clamp(18px, 3vw, 30px);
+      align-content: center;
+    }
+
     .eyebrow {
       display: inline-flex;
       width: fit-content;
@@ -740,14 +746,20 @@
         justify-content: flex-start;
       }
 
-      .nav .button,
       .actions .button,
       .cta .button {
         width: 100%;
       }
 
+      .nav .button {
+        width: auto;
+        min-height: 38px;
+        padding: 9px 14px;
+        font-size: 12px;
+      }
+
       .feature-card {
-        flex-basis: 100%;
+        flex: 0 0 100%;
         min-height: 210px;
       }
 
@@ -777,6 +789,16 @@
       .slide-button {
         padding-inline: 0;
         margin-right: 12px;
+      }
+
+      .nav {
+        gap: 10px 12px;
+      }
+
+      .nav .button {
+        min-height: 36px;
+        padding: 8px 13px;
+        border-radius: 999px;
       }
 
       .calendar-grid {
@@ -918,9 +940,9 @@
       </a>
       <nav class="nav" aria-label="Page sections">
         <button class="slide-button active" type="button" data-slide-to="0">Home</button>
-        <button class="slide-button" type="button" data-slide-to="1">Features</button>
-        <button class="slide-button" type="button" data-slide-to="2">Smart Schedule</button>
-        <button class="slide-button" type="button" data-slide-to="3">Subjects</button>
+        <button class="slide-button" type="button" data-feature-link>Features</button>
+        <button class="slide-button" type="button" data-slide-to="1">Smart Schedule</button>
+        <button class="slide-button" type="button" data-slide-to="2">Subjects</button>
         <a class="button" href="mailto:hello@yourcues.com?subject=NiosLearn%20early%20access">Early Access</a>
       </nav>
     </header>
@@ -929,33 +951,22 @@
       <div class="slides-viewport" aria-label="NiosLearn homepage carousel">
         <div class="slides-track" id="slidesTrack">
           <section class="slide" id="home">
-            <div class="hero-layout">
-              <div>
-                <span class="eyebrow">Learn smart. Progress smarter.</span>
-                <h1>NIOS study planning that turns lessons into <span>daily progress.</span></h1>
-                <p class="hero-copy">
-                  NiosLearn by YourCues helps students set subjects, understand their pace, follow dated lesson windows, revise through cards, and use AI study help when a concept needs a clearer explanation.
-                </p>
-                <div class="actions">
-                  <button class="button" type="button" data-slide-to="2">See the study flow</button>
-                  <button class="button secondary" type="button" data-slide-to="1">Explore features</button>
+            <div class="home-stack">
+              <div class="hero-layout">
+                <div>
+                  <span class="eyebrow">Learn smart. Progress smarter.</span>
+                  <h1>NIOS study planning that turns lessons into <span>daily progress.</span></h1>
+                  <p class="hero-copy">
+                    NiosLearn by YourCues helps students set subjects, understand their pace, follow dated lesson windows, revise through cards, and use AI study help when a concept needs a clearer explanation.
+                  </p>
+                  <div class="actions">
+                    <button class="button" type="button" data-slide-to="1">See the study flow</button>
+                    <button class="button secondary" type="button" data-slide-to="0">Explore features</button>
+                  </div>
                 </div>
               </div>
 
-            </div>
-          </section>
-
-          <section class="slide" id="features">
-            <div class="feature-layout">
-              <div class="section-head wide">
-                <span class="kicker">Features</span>
-                <h2>One vibrant workspace for <span>NIOS learning.</span></h2>
-                <p>
-                  NiosLearn keeps the core study journey in one place: Student Login, AI Chat planning, Learn On The Go cards, Smart Schedule calendars, Smart Learn chapter intelligence, PDF reading, and subject-wise progress. The feature carousel below keeps every capability visible without forcing laptop users to scroll through a long page.
-                </p>
-              </div>
-
-              <div class="feature-stage full">
+              <div class="feature-stage full" id="features" aria-label="NiosLearn feature carousel">
                 <div class="feature-carousel">
                   <div class="feature-track" id="featureTrack">
                     <article class="feature-card">
@@ -1190,6 +1201,15 @@
       });
     });
 
+    document.querySelectorAll("[data-feature-link]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setSlide(0);
+        setFeature(0);
+        startSlideTimer();
+        startFeatureTimer();
+      });
+    });
+
     const featureTrack = document.getElementById("featureTrack");
     const featureCards = Array.from(document.querySelectorAll(".feature-card"));
     const featureDots = document.getElementById("featureDots");
@@ -1209,8 +1229,9 @@
     function setFeature(index) {
       activeFeature = Math.min(Math.max(index, 0), maxFeatureIndex());
       const firstCard = featureCards[0];
-      const gap = 14;
-      const moveBy = firstCard ? firstCard.getBoundingClientRect().width + gap : 0;
+      const trackStyles = window.getComputedStyle(featureTrack);
+      const gap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap || "0") || 0;
+      const moveBy = firstCard ? firstCard.offsetWidth + gap : 0;
       featureTrack.style.transform = `translateX(-${activeFeature * moveBy}px)`;
       Array.from(featureDots.children).forEach((dot, dotIndex) => {
         dot.classList.toggle("active", dotIndex === activeFeature);
