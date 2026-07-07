@@ -923,6 +923,227 @@
         font-size: 11px;
       }
     }
+
+    /* Early Access Modal Styles */
+    .early-access-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .early-access-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 40, 36, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
+      position: relative;
+      z-index: 2;
+      width: 92vw;
+      height: 90vh;
+      background: var(--nios-mist);
+      border: 1px solid var(--nios-line);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .early-access-modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--nios-line);
+      background: white;
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .small-mark {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(0, 109, 104, 0.2);
+      border-radius: 10px;
+      color: white;
+      background: linear-gradient(145deg, #004d45 0%, #16aaa0 120%);
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--nios-ink);
+      line-height: 1.2;
+    }
+
+    .modal-subtitle {
+      font-size: 10px;
+      color: var(--nios-muted);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      display: block;
+      line-height: 1;
+    }
+
+    .close-modal-btn {
+      background: var(--nios-line);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--nios-ink);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .close-modal-btn:hover {
+      background: var(--nios-light);
+      color: var(--nios-deep);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+    }
+
+    #earlyAccessIframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .iframe-loader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--nios-mist);
+      gap: 16px;
+      color: var(--nios-deep);
+      font-weight: 700;
+      font-size: 14px;
+      transition: opacity 0.3s ease;
+      z-index: 3;
+    }
+
+    .iframe-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--nios-line);
+      border-top-color: var(--nios-deep);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .modal-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .maximize-modal-btn {
+      background: var(--nios-line);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--nios-ink);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .maximize-modal-btn:hover {
+      background: var(--nios-light);
+      color: var(--nios-deep);
+      transform: scale(1.05);
+    }
+
+    .modal-content.maximized {
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      border-radius: 0;
+      border: none;
+    }
+
+    .modal-content.maximized .maximize-icon {
+      display: none;
+    }
+
+    .modal-content.maximized .restore-icon {
+      display: block !important;
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 100vw;
+        height: 100vh;
+        height: 100svh;
+        border-radius: 0;
+        border: none;
+      }
+      .modal-header {
+        padding: 12px 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -943,7 +1164,7 @@
         <button class="slide-button" type="button" data-feature-link>Features</button>
         <button class="slide-button" type="button" data-slide-to="1">Smart Schedule</button>
         <button class="slide-button" type="button" data-slide-to="2">Subjects</button>
-        <a class="button" href="https://niosui-122632876591.asia-south1.run.app">Early Access</a>
+        <a class="button" href="https://niosui-122632876591.asia-south1.run.app" id="earlyAccessLink">Early Access</a>
       </nav>
     </header>
 
@@ -1157,6 +1378,40 @@
     </footer>
   </div>
 
+  <!-- Early Access Modal -->
+  <div id="earlyAccessModal" class="early-access-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="small-mark" aria-hidden="true">NL</span>
+          <div>
+            <h3 class="modal-title">NiosLearn Early Access</h3>
+            <span class="modal-subtitle">niosui platform</span>
+          </div>
+        </div>
+        <div class="modal-header-actions">
+          <button id="maximizeModalBtn" class="maximize-modal-btn" aria-label="Maximize view">
+            <svg class="maximize-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+            <svg class="restore-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+              <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>
+            </svg>
+          </button>
+          <button id="closeModalBtn" class="close-modal-btn" aria-label="Close Early Access">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="iframeLoader" class="iframe-loader">
+          <div class="spinner"></div>
+          <span>Loading NiosLearn Platform...</span>
+        </div>
+        <iframe id="earlyAccessIframe" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
   <script>
     const slideTrack = document.getElementById("slidesTrack");
     const slideButtons = Array.from(document.querySelectorAll("[data-slide-to]"));
@@ -1282,6 +1537,74 @@
     setSlide(0);
     startSlideTimer();
     startFeatureTimer();
+
+    // Early Access Modal Interactions
+    const earlyAccessLink = document.getElementById("earlyAccessLink");
+    const earlyAccessModal = document.getElementById("earlyAccessModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const maximizeModalBtn = document.getElementById("maximizeModalBtn");
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const earlyAccessIframe = document.getElementById("earlyAccessIframe");
+    const iframeLoader = document.getElementById("iframeLoader");
+    const modalContent = earlyAccessModal ? earlyAccessModal.querySelector(".modal-content") : null;
+    const targetUrl = "https://niosui-122632876591.asia-south1.run.app";
+
+    function openModal() {
+      earlyAccessModal.classList.add("active");
+      earlyAccessModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      iframeLoader.classList.remove("hidden");
+      
+      // Load the iframe src only when opening to save resources and load fresh
+      earlyAccessIframe.src = targetUrl;
+    }
+
+    function closeModal() {
+      earlyAccessModal.classList.remove("active");
+      earlyAccessModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      
+      if (modalContent) {
+        modalContent.classList.remove("maximized");
+      }
+      
+      // Clear the iframe src to stop running processes in background
+      earlyAccessIframe.src = "";
+    }
+
+    if (earlyAccessLink) {
+      earlyAccessLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    }
+
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", closeModal);
+    }
+
+    if (maximizeModalBtn && modalContent) {
+      maximizeModalBtn.addEventListener("click", () => {
+        modalContent.classList.toggle("maximized");
+      });
+    }
+
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener("click", closeModal);
+    }
+
+    if (earlyAccessIframe) {
+      earlyAccessIframe.addEventListener("load", () => {
+        iframeLoader.classList.add("hidden");
+      });
+    }
+
+    // Close on Escape key press
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && earlyAccessModal.classList.contains("active")) {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
