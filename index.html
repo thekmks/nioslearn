@@ -66,20 +66,73 @@
       background: #ffffff;
     }
 
-    .frame-controls {
+    .frame-controls-drawer {
       position: fixed;
       z-index: 10;
-      top: max(10px, env(safe-area-inset-top));
-      right: max(10px, env(safe-area-inset-right));
+      top: max(0px, env(safe-area-inset-top));
+      left: 50%;
+      display: grid;
+      justify-items: center;
+      transform: translate(-50%, calc(-100% + 28px));
+      transition: transform 180ms ease;
+    }
+
+    .frame-controls-drawer.dragging {
+      transition: none;
+    }
+
+    .frame-controls-drawer.open {
+      transform: translate(-50%, 0);
+    }
+
+    .frame-controls {
       display: flex;
       align-items: center;
       gap: 8px;
       border: 1px solid var(--control-border);
-      border-radius: 999px;
+      border-top: 0;
+      border-radius: 0 0 18px 18px;
       padding: 6px;
       background: var(--control-bg);
       box-shadow: 0 14px 34px rgba(0, 80, 70, 0.18);
       backdrop-filter: blur(14px);
+    }
+
+    .controls-pull {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 28px;
+      margin-top: -1px;
+      border: 1px solid var(--control-border);
+      border-top: 0;
+      border-radius: 0 0 8px 8px;
+      padding: 0;
+      background: var(--control-bg);
+      color: var(--ink);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      box-shadow: 0 12px 28px rgba(0, 80, 70, 0.16);
+      backdrop-filter: blur(14px);
+      transition: color 140ms ease, background 140ms ease;
+    }
+
+    .controls-pull:hover {
+      color: var(--accent);
+      background: #ffffff;
+    }
+
+    .controls-pull:active {
+      cursor: grabbing;
+    }
+
+    .controls-pull svg {
+      transition: transform 180ms ease;
+    }
+
+    .frame-controls-drawer.open .controls-pull svg {
+      transform: rotate(180deg);
     }
 
     .frame-controls button,
@@ -147,11 +200,18 @@
     }
 
     @media (max-width: 640px) {
+      .frame-controls-drawer {
+        transform: translate(-50%, calc(-100% + 26px));
+      }
+
       .frame-controls {
-        top: max(7px, env(safe-area-inset-top));
-        right: max(7px, env(safe-area-inset-right));
         gap: 5px;
         padding: 5px;
+      }
+
+      .controls-pull {
+        width: 42px;
+        height: 26px;
       }
 
       .frame-controls button,
@@ -177,16 +237,23 @@
       </div>
     </div>
 
-    <nav class="frame-controls" aria-label="NiosLearn iframe controls">
-      <button type="button" class="fullscreen-control" id="fullscreenFrame" aria-label="Show full screen" title="Show full screen">
-        <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
-          <path fill="currentColor" d="M5 5h6v2H8.41l3.3 3.29-1.42 1.42L7 8.41V11H5V5Zm8 0h6v6h-2V8.41l-3.29 3.3-1.42-1.42L15.59 7H13V5ZM7 15.59l3.29-3.3 1.42 1.42L8.41 17H11v2H5v-6h2v2.59Zm9.59 1.41-3.3-3.29 1.42-1.42 3.29 3.3V13h2v6h-6v-2h2.59Z" />
+    <div class="frame-controls-drawer" id="controlsDrawer">
+      <nav class="frame-controls" aria-label="NiosLearn iframe controls">
+        <button type="button" class="fullscreen-control" id="fullscreenFrame" aria-label="Show full screen" title="Show full screen">
+          <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+            <path fill="currentColor" d="M5 5h6v2H8.41l3.3 3.29-1.42 1.42L7 8.41V11H5V5Zm8 0h6v6h-2V8.41l-3.29 3.3-1.42-1.42L15.59 7H13V5ZM7 15.59l3.29-3.3 1.42 1.42L8.41 17H11v2H5v-6h2v2.59Zm9.59 1.41-3.3-3.29 1.42-1.42 3.29 3.3V13h2v6h-6v-2h2.59Z" />
+          </svg>
+        </button>
+        <button type="button" class="close-control" id="closeFrame" aria-label="Close app frame" title="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 10.59 5.3-5.3 1.41 1.42-5.3 5.29 5.3 5.3-1.42 1.41-5.29-5.3-5.3 5.3-1.41-1.42 5.3-5.29-5.3-5.3L6.7 5.3z" /></svg>
+        </button>
+      </nav>
+      <button type="button" class="controls-pull" id="controlsPull" aria-label="Show frame controls" aria-expanded="false" title="Show frame controls">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
         </svg>
       </button>
-      <button type="button" class="close-control" id="closeFrame" aria-label="Close app frame" title="Close">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 10.59 5.3-5.3 1.41 1.42-5.3 5.29 5.3 5.3-1.42 1.41-5.29-5.3-5.3 5.3-1.41-1.42 5.3-5.29-5.3-5.3L6.7 5.3z" /></svg>
-      </button>
-    </nav>
+    </div>
   </main>
 
   <section class="closed-state" id="closedState" aria-label="NiosLearn frame closed">
@@ -196,6 +263,38 @@
   <script>
     const shell = document.getElementById("shell");
     const closedState = document.getElementById("closedState");
+    const controlsDrawer = document.getElementById("controlsDrawer");
+    const controlsPull = document.getElementById("controlsPull");
+    const drawerPositionKey = "niosControlsDrawerLeft";
+    let drawerDrag = null;
+    let ignoreNextPullClick = false;
+
+    function clampDrawerLeft(left) {
+      const margin = 8;
+      const halfWidth = controlsDrawer.offsetWidth / 2;
+      const min = halfWidth + margin;
+      const max = window.innerWidth - halfWidth - margin;
+      if (max < min) return window.innerWidth / 2;
+      return Math.min(max, Math.max(min, left));
+    }
+
+    function setDrawerLeft(left) {
+      const clamped = clampDrawerLeft(left);
+      controlsDrawer.style.left = `${clamped}px`;
+      sessionStorage.setItem(drawerPositionKey, String(clamped));
+    }
+
+    function restoreDrawerPosition() {
+      const savedLeft = Number(sessionStorage.getItem(drawerPositionKey));
+      setDrawerLeft(Number.isFinite(savedLeft) ? savedLeft : window.innerWidth / 2);
+    }
+
+    function setControlsOpen(open) {
+      controlsDrawer.classList.toggle("open", open);
+      controlsPull.setAttribute("aria-expanded", String(open));
+      controlsPull.setAttribute("aria-label", open ? "Hide frame controls" : "Show frame controls");
+      controlsPull.title = open ? "Hide frame controls" : "Show frame controls";
+    }
 
     async function toggleFullscreen() {
       try {
@@ -219,6 +318,55 @@
 
     document.getElementById("fullscreenFrame").addEventListener("click", toggleFullscreen);
     document.addEventListener("fullscreenchange", syncFullscreenButton);
+    controlsPull.addEventListener("pointerdown", (event) => {
+      if (event.button !== undefined && event.button !== 0) return;
+
+      const rect = controlsDrawer.getBoundingClientRect();
+      drawerDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startLeft: rect.left + rect.width / 2,
+        moved: false,
+      };
+      controlsDrawer.classList.add("dragging");
+      controlsPull.setPointerCapture(event.pointerId);
+    });
+    controlsPull.addEventListener("pointermove", (event) => {
+      if (!drawerDrag || event.pointerId !== drawerDrag.pointerId) return;
+
+      const deltaX = event.clientX - drawerDrag.startX;
+      if (Math.abs(deltaX) > 4) drawerDrag.moved = true;
+      setDrawerLeft(drawerDrag.startLeft + deltaX);
+      event.preventDefault();
+    });
+    controlsPull.addEventListener("pointerup", (event) => {
+      if (!drawerDrag || event.pointerId !== drawerDrag.pointerId) return;
+
+      ignoreNextPullClick = drawerDrag.moved;
+      drawerDrag = null;
+      controlsDrawer.classList.remove("dragging");
+      controlsPull.releasePointerCapture(event.pointerId);
+    });
+    controlsPull.addEventListener("pointercancel", (event) => {
+      if (!drawerDrag || event.pointerId !== drawerDrag.pointerId) return;
+
+      drawerDrag = null;
+      controlsDrawer.classList.remove("dragging");
+      controlsPull.releasePointerCapture(event.pointerId);
+    });
+    controlsPull.addEventListener("click", (event) => {
+      if (ignoreNextPullClick) {
+        ignoreNextPullClick = false;
+        event.preventDefault();
+        return;
+      }
+
+      setControlsOpen(!controlsDrawer.classList.contains("open"));
+    });
+    window.addEventListener("resize", () => {
+      const rect = controlsDrawer.getBoundingClientRect();
+      setDrawerLeft(rect.left + rect.width / 2);
+    });
     document.getElementById("closeFrame").addEventListener("click", () => {
       shell.hidden = true;
       closedState.classList.add("visible");
@@ -228,6 +376,7 @@
       closedState.classList.remove("visible");
     });
 
+    restoreDrawerPosition();
     syncFullscreenButton();
   </script>
 </body>
